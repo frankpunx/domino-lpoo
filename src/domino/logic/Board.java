@@ -2,33 +2,94 @@ package domino.logic;
 
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 public class Board {
 
+	private static final int MAX_PIECES_PER_PLAYER = 7;
+	private static final int MAX_NO_PLAYERS = 4;
+
 	private List<Piece> availablePieces;
+	private List<Piece> allPieces;
 	private List<Player> availablePlayers;
-	
+
 	public Board() {
 		this.availablePieces = new LinkedList<Piece>();
 		this.availablePlayers = new LinkedList<Player>();
-		
+		this.allPieces = new LinkedList<Piece>();
+
 		for (int i = 0; i <= 6; i++) {
 			for (int j = 0; j <= i; j++) {
-			
-				availablePieces.add(new Piece(new Pair(j, i)));
+
+				Piece p = new Piece(i, j);
+
+				availablePieces.add(p);
+				allPieces.add(p);
 			}
 		}
-		
-		for (int i = 0; i < availablePieces.size(); i++) {
-			System.out.println(availablePieces.get(i).getValuesPair());
-		}
 	}
-	
+
 	public final List<Piece> getAvailablePieces() {
 		return availablePieces;
 	}
 	public final List<Player> getAvailablePlayers() {
 		return availablePlayers;
 	}
-	
+
+	public final List<Piece> getAllPieces() {
+		return allPieces;
+	}
+
+	public final void addPlayer(Player p) {
+
+		/* Check maximum number of players */
+		if(availablePlayers.size() >= MAX_NO_PLAYERS)
+			throw new UnsupportedOperationException("Maximum number of players reached.");
+		else if(availablePieces.size() < MAX_PIECES_PER_PLAYER)
+			throw new UnsupportedOperationException("Not enough pieces available.");
+
+		/* Giving pieces to player */
+		int i = 0;
+		Random r = new Random();
+		while (i < MAX_PIECES_PER_PLAYER) {
+
+			int randPos = r.nextInt(availablePieces.size());
+
+			Piece chosen = availablePieces.get(randPos);
+			chosen.setState(Piece.pieceState_t.ON_PLAYER);
+			
+			p.addPiece(chosen);
+			availablePieces.remove(randPos);
+
+			i++;
+		}
+
+		/* Add player to board */
+		availablePlayers.add(p);
+	}
+
+	public String toString() {
+
+		StringBuilder f = new StringBuilder();
+
+		f.append("All Pieces: ");
+
+		for (Piece piece : allPieces) {
+			f.append(piece + " ");
+		}
+
+		f.append("\nAvailable Pieces: ");
+
+		for (Piece piece : availablePieces) {
+			f.append(piece + " ");
+		}
+
+		f.append("\n\nPlayers: \n");
+
+		for (Player player : availablePlayers) {
+			f.append(player + "\n");
+		}
+
+		return f.toString();
+	}
 }

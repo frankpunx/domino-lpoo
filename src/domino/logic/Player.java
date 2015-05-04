@@ -17,8 +17,7 @@ public class Player {
 	}
 
 	public Player(String name) {
-		this.name = name;
-		this.score = 0;
+		this(name, 0);
 	}
 
 	public final String getName() {
@@ -55,5 +54,18 @@ public class Player {
 		}
 		
 		return true;
+	}
+	
+	public String toString() {
+		StringBuilder s = new StringBuilder();
+		
+		s.append("Name: " + name + " - Score: " + score + "\n");
+		
+		s.append("Available pieces: ");
+		for (Piece piece : myPieces) {
+			s.append(piece + " ");
+		}
+		
+		return s.toString();
 	}
 }

@@ -1,7 +1,8 @@
 package domino.test;
 
+import domino.ai.ArtificialInteligence;
+import domino.ai.ChooseRandomPiece;
 import domino.logic.Board;
-import domino.logic.Player;
 
 public class Testes {
 
@@ -9,10 +10,12 @@ public class Testes {
 
 	public static void main(String[] args) {
 		
+		ArtificialInteligence ai = new ChooseRandomPiece();
+		
 		/* Add players to the game */
-		board.addPlayer(new Player("ADC"));
-		board.addPlayer(new Player("Francisco"));
-		board.addPlayer(new Player("Rui"));
+		board.addPlayer("ADC", ai);
+		board.addPlayer("Francisco", ai);
+		board.addPlayer("Rui", ai);
 		//board.addPlayer(new Player("Diogo"));
 
 		/* Show board status */

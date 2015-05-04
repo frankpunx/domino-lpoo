@@ -10,11 +10,16 @@ public class Piece {
 		HORIZONTAL, VERTICAL
 	};
 	
+	public enum availablePosition_t {
+		LEFT, RIGHT, BOTH, NONE
+	};
+	
 	private Pair centerPosition;
 	private Pair values;
 	
 	private pieceState_t state;
 	private orientation_t orientation;
+	private availablePosition_t availablePosition;
 
 	public Piece(Pair position, Pair values) {
 
@@ -28,6 +33,7 @@ public class Piece {
 		this.values = values;
 		this.state = pieceState_t.ON_DECK;
 		this.orientation = null;
+		this.availablePosition = availablePosition_t.BOTH;
 	}
 
 	public Piece(int f, int s) {
@@ -67,6 +73,14 @@ public class Piece {
 
 	public final void setOrientation(orientation_t orientation) {
 		this.orientation = orientation;
+	}
+
+	public final availablePosition_t getAvailablePosition() {
+		return availablePosition;
+	}
+
+	public final void setAvailablePosition(availablePosition_t availablePosition) {
+		this.availablePosition = availablePosition;
 	}
 
 	public String toString() {

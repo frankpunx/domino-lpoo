@@ -4,6 +4,8 @@ import java.util.LinkedList;
 import java.util.List;
 import java.util.Random;
 
+import domino.ai.ArtificialInteligence;
+
 public class Board {
 
 	private static final int MAX_PIECES_PER_PLAYER = 7;
@@ -46,7 +48,7 @@ public class Board {
 	
 	
 
-	public final void addPlayer(Player p) {
+	public final void addPlayer(String name, ArtificialInteligence ai) {
 
 		/* Check maximum number of players */
 		if(availablePlayers.size() >= MAX_NO_PLAYERS)
@@ -55,6 +57,7 @@ public class Board {
 			throw new UnsupportedOperationException("Not enough pieces available.");
 
 		/* Add player to board */
+		Player p = new Player(name, this, ai);
 		availablePlayers.add(p);
 
 		/* Giving pieces to player */
@@ -92,6 +95,15 @@ public class Board {
 		
 		return true;
 	}
+	
+	public final void playPiece(Player p) {
+		
+		// As peças são alteradas dentro da classe Player
+		p.makeMove(playablePieces);
+		
+	}
+	
+	
 	
 	public String toString() {
 

@@ -3,20 +3,27 @@ package domino.logic;
 import java.util.LinkedList;
 import java.util.List;
 
+import domino.ai.ArtificialInteligence;
+
 public class Player {
 
 	private String name;
 	private int score;
 	
 	private List<Piece> myPieces = new LinkedList<Piece>();
+	private final Board boardAssociated;
+	
+	private final ArtificialInteligence ai;
 
-	public Player(String name, int score) {
+	public Player(String name, int score, Board b, ArtificialInteligence ai) {
 		this.name = name;
 		this.score = score;
+		this.boardAssociated = b;
+		this.ai = ai;
 	}
 
-	public Player(String name) {
-		this(name, 0);
+	public Player(String name, Board b, ArtificialInteligence ai) {
+		this(name, 0, b, ai);
 	}
 
 	public final String getName() {
@@ -55,6 +62,10 @@ public class Player {
 		return true;
 	}
 	
+	public final Board getBoardAssociated() {
+		return boardAssociated;
+	}
+
 	public String toString() {
 		StringBuilder s = new StringBuilder();
 		
@@ -66,5 +77,16 @@ public class Player {
 		}
 		
 		return s.toString();
+	}
+
+	public Piece makeMove(List<Piece> playablePieces) {
+		
+		if(this.ai != null) {
+			return this.ai.getPieceToPlay(playablePieces, myPieces);
+		} else {
+			// Peca escolhida pelo utilizador
+		}
+		
+		return null;
 	}
 }

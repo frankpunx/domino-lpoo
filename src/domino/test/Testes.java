@@ -2,24 +2,24 @@ package domino.test;
 
 import domino.ai.ArtificialInteligence;
 import domino.ai.ChooseRandomPiece;
-import domino.logic.Board;
+import domino.logic.Game;
 
 public class Testes {
 
-	private static Board board = new Board();
+	private static Game game = new Game();
 
 	public static void main(String[] args) {
 		
 		ArtificialInteligence ai = new ChooseRandomPiece();
 		
 		/* Add players to the game */
-		board.addPlayer("ADC", ai);
-		board.addPlayer("Francisco", ai);
-		board.addPlayer("Rui", ai);
-		//board.addPlayer(new Player("Diogo"));
+		game.addPlayer("ADC", ai);
+		game.addPlayer("Francisco", ai);
+		game.addPlayer("Rui", ai);
+		//game.addPlayer("Diogo", ai);
 
 		/* Show board status */
-		System.out.println(board);
+		System.out.println(game);
 	}
 
 }

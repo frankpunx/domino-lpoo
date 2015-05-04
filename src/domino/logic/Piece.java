@@ -5,18 +5,18 @@ public class Piece {
 	public enum pieceState_t {
 		ON_BOARD, ON_PLAYER, ON_DECK
 	};
-	
+
 	public enum orientation_t {
-		HORIZONTAL, VERTICAL
+		LEFT_TO_RIGHT, RIGHT_TO_LEFT, UP_TO_DOWN, DOWN_TO_UP
 	};
-	
+
 	public enum availablePosition_t {
-		LEFT, RIGHT, BOTH, NONE
+		LEFT, RIGHT, LEFT_RIGHT, ABOVE, BELOW, ABOVE_BELOW, ALL, NONE
 	};
-	
+
 	private Pair centerPosition;
 	private Pair values;
-	
+
 	private pieceState_t state;
 	private orientation_t orientation;
 	private availablePosition_t availablePosition;
@@ -33,20 +33,20 @@ public class Piece {
 		this.values = values;
 		this.state = pieceState_t.ON_DECK;
 		this.orientation = null;
-		this.availablePosition = availablePosition_t.BOTH;
+		this.availablePosition = availablePosition_t.NONE;
 	}
 
 	public Piece(int f, int s) {
 
 		this(null, new Pair(f, s));
 	}
-	
+
 	public Piece(Pair values) {
 
 		this(null, values);
 	}
 
-	
+
 	public final Pair getPositionPair() {
 		return centerPosition;
 	}
@@ -58,7 +58,7 @@ public class Piece {
 	public int getSum() {
 		return values.getSum();
 	}
-	
+
 	public final pieceState_t getState() {
 		return state;
 	}
@@ -81,6 +81,31 @@ public class Piece {
 
 	public final void setAvailablePosition(availablePosition_t availablePosition) {
 		this.availablePosition = availablePosition;
+	}
+
+	public final boolean isDoubleValues() {
+		return values.getFirst() == values.getSecond();
+	}
+
+	public final boolean isMatchable(Piece p) {
+
+		if(this.availablePosition == availablePosition_t.NONE || p.availablePosition == availablePosition_t.NONE || this.availablePosition == p.availablePosition)
+			return false;
+		
+		
+		
+
+		if((this.availablePosition == availablePosition_t.RIGHT || this.availablePosition == availablePosition_t.LEFT_RIGHT) && (values.getSecond() == p.values.getFirst() || values.getSecond() == p.values.getSecond()))
+			return true;
+		
+		else if((this.availablePosition == availablePosition_t.LEFT || this.availablePosition == availablePosition_t.LEFT_RIGHT) && (values.getFirst() == p.values.getFirst() || values.getFirst() == p.values.getSecond()))
+			return true;
+		
+		else if(this.isDoubleValues() && (values.getFirst() == p.values.getFirst() || values.getFirst() == p.values.getSecond()))
+			return true;
+		
+		
+		return false;
 	}
 
 	public String toString() {

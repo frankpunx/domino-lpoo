@@ -8,12 +8,11 @@ public class Player {
 	private String name;
 	private int score;
 	
-	private List<Piece> myPieces;
+	private List<Piece> myPieces = new LinkedList<Piece>();
 
 	public Player(String name, int score) {
 		this.name = name;
 		this.score = score;
-		this.myPieces = new LinkedList<Piece>();
 	}
 
 	public Player(String name) {

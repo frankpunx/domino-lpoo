@@ -9,17 +9,19 @@ public class Board {
 	private static final int MAX_PIECES_PER_PLAYER = 7;
 	private static final int MAX_NO_PLAYERS = 4;
 
-	private List<Piece> availablePieces;
-	private List<Piece> allPieces;
-	private List<Player> availablePlayers;
+	private List<Piece> availablePieces = new LinkedList<Piece>();
+	private List<Piece> allPieces = new LinkedList<Piece>();
+	private List<Player> availablePlayers = new LinkedList<Player>();
+	
+	private List<Piece> playablePieces = new LinkedList<Piece>();
+	
+	private Piece[][] board = new Piece[55][55];
 	
 	private Random r = new Random();
 
 	public Board() {
-		this.availablePieces = new LinkedList<Piece>();
-		this.availablePlayers = new LinkedList<Player>();
-		this.allPieces = new LinkedList<Piece>();
 
+		// Add a new piece to the board
 		for (int i = 0; i <= 6; i++) {
 			for (int j = 0; j <= i; j++) {
 
@@ -41,6 +43,8 @@ public class Board {
 	public final List<Piece> getAllPieces() {
 		return allPieces;
 	}
+	
+	
 
 	public final void addPlayer(Player p) {
 
@@ -66,12 +70,15 @@ public class Board {
 
 	public final boolean givePieceToPlayer(Player p) {
 		
+		// Check whether the player is playing in this game
 		if(! availablePlayers.contains(p))
 			return false;
 		
+		// Check whether there are enough pieces available
 		else if(availablePieces.size() == 0) 
 			return false;
 			
+		// Give a piece to the player
 		else {
 			
 			int randPos = r.nextInt(availablePieces.size());
@@ -106,6 +113,17 @@ public class Board {
 
 		for (Player player : availablePlayers) {
 			f.append(player + "\n");
+		}
+		
+		f.append("\n\nBoard: \n");
+
+		for (Piece[] piece : board) {
+			
+			for (Piece piece2 : piece) {
+				f.append(piece2 + " ");
+			}
+			
+			f.append('\n');
 		}
 
 		return f.toString();

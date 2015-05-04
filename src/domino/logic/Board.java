@@ -12,6 +12,8 @@ public class Board {
 	private List<Piece> availablePieces;
 	private List<Piece> allPieces;
 	private List<Player> availablePlayers;
+	
+	private Random r = new Random();
 
 	public Board() {
 		this.availablePieces = new LinkedList<Piece>();
@@ -48,11 +50,30 @@ public class Board {
 		else if(availablePieces.size() < MAX_PIECES_PER_PLAYER)
 			throw new UnsupportedOperationException("Not enough pieces available.");
 
+		/* Add player to board */
+		availablePlayers.add(p);
+
 		/* Giving pieces to player */
 		int i = 0;
-		Random r = new Random();
 		while (i < MAX_PIECES_PER_PLAYER) {
 
+			if(! this.givePieceToPlayer(p))
+				throw new UnsupportedOperationException("Not possible to give a piece to the player.");
+
+			i++;
+		}
+	}
+
+	public final boolean givePieceToPlayer(Player p) {
+		
+		if(! availablePlayers.contains(p))
+			return false;
+		
+		else if(availablePieces.size() == 0) 
+			return false;
+			
+		else {
+			
 			int randPos = r.nextInt(availablePieces.size());
 
 			Piece chosen = availablePieces.get(randPos);
@@ -60,14 +81,11 @@ public class Board {
 			
 			p.addPiece(chosen);
 			availablePieces.remove(randPos);
-
-			i++;
 		}
-
-		/* Add player to board */
-		availablePlayers.add(p);
+		
+		return true;
 	}
-
+	
 	public String toString() {
 
 		StringBuilder f = new StringBuilder();

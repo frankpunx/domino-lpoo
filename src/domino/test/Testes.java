@@ -8,6 +8,7 @@ public class Testes {
 	private static Board board = new Board();
 
 	public static void main(String[] args) {
+		
 		/* Add players to the game */
 		board.addPlayer(new Player("ADC"));
 		board.addPlayer(new Player("Francisco"));

@@ -8,7 +8,7 @@ import domino.logic.Piece;
 public class ChooseRandomPiece implements ArtificialInteligence {
 
 	Random r = new Random();
-	
+
 	@Override
 	/**
 	 * @param playablePieces These are the pieces which can be made a move
@@ -17,30 +17,16 @@ public class ChooseRandomPiece implements ArtificialInteligence {
 	 * @return Piece to play; otherwise, null, to indicate that the player must fetch a new piece.
 	 */
 	public Piece getPieceToPlay(List<Piece> playablePieces, List<Piece> availablePieces) {
-		
+
 		for (int i = 0; i < playablePieces.size(); i++) {
 			for (int j = 0; j < availablePieces.size(); j++) {
-				
+
 				if(playablePieces.get(i).isMatchable(availablePieces.get(j))) {
-					Piece piece = availablePieces.remove(j);
-					
-					switch(r.nextInt(4)) {
-					case 0:
-						piece.setOrientation(Piece.orientation_t.LEFT_TO_RIGHT);
-						break;
-					case 1:
-						break;
-					case 2:
-						break;
-					case 3:
-						break;
-					}
-					
-					return piece;
+					return availablePieces.remove(j);
 				}
 			}
 		}
-		
+
 		return null;
 	}
 

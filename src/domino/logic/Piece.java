@@ -1,5 +1,7 @@
 package domino.logic;
 
+import java.util.Random;
+
 public class Piece {
 
 	public enum pieceState_t {
@@ -7,11 +9,11 @@ public class Piece {
 	};
 
 	public enum orientation_t {
-		LEFT_TO_RIGHT, RIGHT_TO_LEFT, UP_TO_DOWN, DOWN_TO_UP
+		LEFT_TO_RIGHT, UP_TO_DOWN
 	};
 
 	public enum availablePosition_t {
-		LEFT, RIGHT, LEFT_RIGHT, ABOVE, BELOW, ABOVE_BELOW, ALL, NONE
+		LEFT, RIGHT, LEFT_AND_SIDES, RIGHT_AND_SIDES, LEFT_RIGHT, ALL, NONE
 	};
 
 	private Pair centerPosition;
@@ -87,25 +89,96 @@ public class Piece {
 		return values.getFirst() == values.getSecond();
 	}
 
+	// TODO
 	public final boolean isMatchable(Piece p) {
 
 		if(this.availablePosition == availablePosition_t.NONE || p.availablePosition == availablePosition_t.NONE || this.availablePosition == p.availablePosition)
 			return false;
-		
-		
-		
 
-		if((this.availablePosition == availablePosition_t.RIGHT || this.availablePosition == availablePosition_t.LEFT_RIGHT) && (values.getSecond() == p.values.getFirst() || values.getSecond() == p.values.getSecond()))
-			return true;
-		
-		else if((this.availablePosition == availablePosition_t.LEFT || this.availablePosition == availablePosition_t.LEFT_RIGHT) && (values.getFirst() == p.values.getFirst() || values.getFirst() == p.values.getSecond()))
-			return true;
-		
-		else if(this.isDoubleValues() && (values.getFirst() == p.values.getFirst() || values.getFirst() == p.values.getSecond()))
-			return true;
-		
-		
-		return false;
+		return true;
+	}
+	 
+	/**
+	 * Links two pieces on the board. If such connection is not possible, the link is not established.
+	 * @param p The piece which is going to be linked
+	 * @param r Null, if the positions are set by the player
+	 * @return <true> if was successful; <false> otherwise.
+	 */
+	public final boolean linkPieces(Piece p, Random r) {
+		/*
+		if(! this.isMatchable(p)) {
+			return false;
+		}
+		 */
+
+		if (this.orientation == orientation_t.LEFT_TO_RIGHT && this.availablePosition == availablePosition_t.RIGHT) {
+
+			if (this.availablePosition == availablePosition_t.RIGHT)
+
+				switch (r.nextInt(3)) {
+				case 0:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() + 3, this.centerPosition.getSecond() - 1);
+					break;
+				case 1:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() + 4, this.centerPosition.getSecond());
+					break;
+				case 2:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() + 3, this.centerPosition.getSecond() + 1);
+					break;
+
+				}
+
+
+			else if (this.availablePosition == availablePosition_t.LEFT)
+
+				switch (r.nextInt(3)) {
+				case 0:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() - 3, this.centerPosition.getSecond() - 1);
+					break;
+				case 1:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() - 4, this.centerPosition.getSecond());
+					break;
+				case 2:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() - 3, this.centerPosition.getSecond() + 1);
+					break;
+
+				}
+
+		} else if (this.orientation == orientation_t.UP_TO_DOWN && this.availablePosition == availablePosition_t.LEFT) {
+
+			if (this.availablePosition == availablePosition_t.LEFT)
+
+				switch (r.nextInt(3)) {
+				case 0:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() + 1, this.centerPosition.getSecond() - 3);
+					break;
+				case 1:
+					p.centerPosition = new Pair(this.centerPosition.getFirst(), this.centerPosition.getSecond() - 4);
+					break;
+				case 2:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() - 1, this.centerPosition.getSecond() - 3);
+					break;
+
+				}
+
+			else if (this.availablePosition == availablePosition_t.RIGHT)
+
+				switch (r.nextInt(3)) {
+				case 0:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() + 1, this.centerPosition.getSecond() + 3);
+					break;
+				case 1:
+					p.centerPosition = new Pair(this.centerPosition.getFirst(), this.centerPosition.getSecond() + 4);
+					break;
+				case 2:
+					p.centerPosition = new Pair(this.centerPosition.getFirst() - 1, this.centerPosition.getSecond() + 3);
+					break;
+
+				}
+
+		}
+
+		return true;
 	}
 
 	public String toString() {

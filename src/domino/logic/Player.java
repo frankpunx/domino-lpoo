@@ -4,16 +4,16 @@ import java.util.LinkedList;
 import java.util.List;
 
 import domino.ai.ArtificialInteligence;
+import domino.exceptions.LinkingNotPossible;
 
 public class Player {
 
 	private String name;
 	private int score;
+	private final ArtificialInteligence ai;
 
 	private List<Piece> myPieces = new LinkedList<Piece>();
 	private final Game gameAssociated;
-
-	private final ArtificialInteligence ai;
 
 	public Player(String name, int score, Game g, ArtificialInteligence ai) {
 		this.name = name;
@@ -70,30 +70,37 @@ public class Player {
 		return myPieces.isEmpty();
 	}
 
+
+	public Piece makePlayerMove(List<Piece> playablePieces) throws LinkingNotPossible {
+
+		if(this.ai != null) {
+			Piece pieceToPlay = ai.getPieceToPlay(playablePieces, myPieces);
+
+			if(pieceToPlay == null) {
+				gameAssociated.getNewAvailablePiece(this);
+				throw new LinkingNotPossible();
+			}
+		}
+
+
+		// Peca escolhida pelo utilizador
+
+
+		return null;
+	}
+
+
 	public String toString() {
+		
 		StringBuilder s = new StringBuilder();
 
-		s.append("Name: " + name + " - Score: " + score + "\n");
+		s.append("\nName: " + name + " - Score: " + score + "\n");
 
-		s.append("Available pieces: ");
+		s.append("My pieces: ");
 		for (Piece piece : myPieces) {
 			s.append(piece + " ");
 		}
 
 		return s.toString();
-	}
-
-	public Piece makeMove(List<Piece> playablePieces) {
-
-		if(this.ai != null) {
-			return ai.getPieceToPlay(playablePieces, myPieces);
-
-		}
-		
-		
-		// Peca escolhida pelo utilizador
-
-
-		return null;
 	}
 }

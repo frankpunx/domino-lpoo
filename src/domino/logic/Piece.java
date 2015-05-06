@@ -9,7 +9,7 @@ public class Piece {
 	};
 
 	public enum orientation_t {
-		LEFT_TO_RIGHT, UP_TO_DOWN
+		LEFT_TO_RIGHT, RIGHT_TO_LEFT, UP_TO_DOWN, DOWN_TO_UP
 	};
 
 	public enum availablePosition_t {
@@ -182,6 +182,6 @@ public class Piece {
 	}
 
 	public String toString() {
-		return values.toString() + " -> State: " + state;
+		return values.toString();// + " -> State: " + state;
 	}
 }

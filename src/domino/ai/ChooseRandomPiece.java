@@ -17,7 +17,7 @@ public class ChooseRandomPiece implements ArtificialInteligence {
 	 * @return Piece to play; otherwise, null, to indicate that the player must fetch a new piece.
 	 */
 	public Piece getPieceToPlay(List<Piece> playablePieces, List<Piece> availablePieces) {
-
+		/*
 		for (int i = 0; i < playablePieces.size(); i++) {
 			for (int j = 0; j < availablePieces.size(); j++) {
 
@@ -26,7 +26,7 @@ public class ChooseRandomPiece implements ArtificialInteligence {
 				}
 			}
 		}
-
+		*/
 		return null;
 	}
 

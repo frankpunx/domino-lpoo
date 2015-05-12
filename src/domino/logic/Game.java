@@ -3,12 +3,9 @@ package domino.logic;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
-import java.util.Random;
 
 import domino.ai.ArtificialInteligence;
 import domino.exceptions.LinkingNotPossible;
-import domino.logic.Piece.availablePosition_t;
-import domino.logic.Piece.orientation_t;
 
 public class Game {
 
@@ -124,6 +121,8 @@ public class Game {
 
 		if(! p1.isMatchable(p2) || p1.getPositionPair() == null)
 			return false;
+		
+		
 
 		if (p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.RIGHT) {
 
@@ -264,18 +263,18 @@ public class Game {
 				p2.setOrientation(Piece.orientation_t.VERTICAL);
 				p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
 
-			} else {													
+			} else {													// New orientation: horizontal
 
 				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
 
 					if(newDirection == Direction.LEFT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.RIGHT) {
 						p2.flipValues();
 						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() + 1));
 						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
+
+					} else if(newDirection == Direction.RIGHT) {
+						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() + 1));
+						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
 
 					} else
 						return false;
@@ -284,13 +283,13 @@ public class Game {
 
 
 					if(newDirection == Direction.LEFT) {
+						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() + 1));
+						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
+
+					} else if(newDirection == Direction.RIGHT) {
 						p2.flipValues();
 						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() + 1));
 						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
 
 					} else
 						return false;

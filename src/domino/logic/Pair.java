@@ -60,6 +60,16 @@ public class Pair implements Serializable {
 		return first + second;
 	}
 	
+	public final boolean isSameValues() {
+		return this.first == this.second;
+	}
+	
+	public void swapValues() {
+		int temp = this.first;
+		this.first = this.second;
+		this.second = temp;
+	}
+	
 	public String toString() {
 		return "[" + first + ", " + second + "]";
 	}

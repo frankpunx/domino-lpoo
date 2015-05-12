@@ -3,9 +3,12 @@ package domino.logic;
 import java.util.Collections;
 import java.util.LinkedList;
 import java.util.List;
+import java.util.Random;
 
 import domino.ai.ArtificialInteligence;
 import domino.exceptions.LinkingNotPossible;
+import domino.logic.Piece.availablePosition_t;
+import domino.logic.Piece.orientation_t;
 
 public class Game {
 
@@ -16,7 +19,7 @@ public class Game {
 	private Board board = new Board();								/* Contains the state of the board, that is, all pieces already played by the players */
 	private List<Player> players = new LinkedList<Player>();		/* Contains a list of the players */
 
-	private List<Piece> availablePieces = new LinkedList<Piece>();	/* Contains a list of pieces that */
+	private List<Piece> availablePieces = new LinkedList<Piece>();	/* Contains a list of pieces that can be fetched by the players */
 	private List<Piece> playablePieces = new LinkedList<Piece>();
 
 	private int turn = 0;
@@ -66,18 +69,18 @@ public class Game {
 
 		try {
 			Piece p = players.get(turn).makePlayerMove(availablePieces);
-			board.putPiece(p);
+			board.putPieceOnTable(p);
 
 		} catch(UnsupportedOperationException e) {
-			
+
 			// Significa que a jogada foi invalida
 			System.out.println(e.getMessage());
 			return;
-			
+
 		} catch (LinkingNotPossible e) {
 			// TODO Auto-generated catch block
 			//e.printStackTrace();
-			turn = turn++ % MAX_NO_PLAYERS;
+			turn = (turn + 1) % players.size();
 		}
 
 	}
@@ -93,11 +96,11 @@ public class Game {
 			p.addPiece(piece);
 	}
 
-	
-	
-	
-	
-	
+
+
+
+
+
 	/* Obter nova peça */
 	private final Piece getPiece(Piece.pieceState_t newState) {
 
@@ -109,6 +112,82 @@ public class Game {
 			return piece;
 		}
 	}
+
+	/**
+	 * Links two pieces on the board. If such connection is not possible, the link is not established.
+	 * @param p1 The piece which is going to be linked with p2. It is already in the table
+	 * @param p2 The other piece involved in the process of linkage
+	 * @param r Random object used to get a random orientation for the piece (valid if the player is not human). Furthermore, it accepts <null> if the positions are set by the player.
+	 * @return <true> if was successful; <false> otherwise.
+	 */
+	public final boolean linkPieces(Piece p1, Piece p2, Piece.orientation_t newOrientation, Direction newDirection) {
+
+		if(! p1.isMatchable(p2) || p1.getPositionPair() == null)
+			return false;
+
+
+		if (p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.RIGHT) {
+
+			if (p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
+
+				if(newOrientation == Piece.orientation_t.HORIZONTAL)
+					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
+
+				else if(newDirection == Direction.DOWN)
+					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() + 3));
+
+				else if(newDirection == Direction.UP) {
+
+					p2.flipValues();
+					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() - 3));
+					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
+
+					p2.setState(Piece.pieceState_t.ON_BOARD);
+					board.putPieceOnTable(p2);
+
+					return true;
+				}
+
+
+				p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
+
+
+			} else if (p1.getValuesPair().getSecond() == p2.getValuesPair().getSecond()) {
+
+				if(newOrientation == Piece.orientation_t.HORIZONTAL) {
+					p2.flipValues();
+					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
+
+				} else if(newDirection == Direction.DOWN) {
+					p2.flipValues();
+					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() + 3));
+
+				} else if(newDirection == Direction.UP) {
+
+					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() - 3));
+					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
+
+					p2.setState(Piece.pieceState_t.ON_BOARD);
+					board.putPieceOnTable(p2);
+
+					return true;
+				}
+
+
+				p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
+
+			}
+			
+			
+		}
+
+
+		p2.setState(Piece.pieceState_t.ON_BOARD);
+		board.putPieceOnTable(p2);
+
+		return true;
+	}
+
 
 
 
@@ -139,19 +218,19 @@ public class Game {
 		str.append(board.toString() + "\n");
 
 		str.append("Available Pieces: ");
-		
+
 		for (Piece piece : availablePieces) {
 			str.append(piece + " ");
 		}
-		
+
 		str.append("\nPlayable Pieces: ");
-		
+
 		for (Piece piece : playablePieces) {
 			str.append(piece + " ");
 		}
-		
+
 		str.append("\nPlayers: ");
-		
+
 		for (Player player : players) {
 			str.append(player + "\n");
 		}

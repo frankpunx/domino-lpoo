@@ -1,7 +1,5 @@
 package domino.logic;
 
-import java.util.Random;
-
 public class Piece {
 
 	public enum pieceState_t {
@@ -9,7 +7,7 @@ public class Piece {
 	};
 
 	public enum orientation_t {
-		LEFT_TO_RIGHT, RIGHT_TO_LEFT, UP_TO_DOWN, DOWN_TO_UP
+		HORIZONTAL, VERTICAL
 	};
 
 	public enum availablePosition_t {
@@ -35,22 +33,31 @@ public class Piece {
 		this.values = values;
 		this.state = pieceState_t.ON_DECK;
 		this.orientation = null;
-		this.availablePosition = availablePosition_t.NONE;
+		
+		if(values.isSameValues())
+			this.availablePosition = availablePosition_t.ALL;			
+		else
+			this.availablePosition = availablePosition_t.LEFT_RIGHT;
 	}
 
 	public Piece(int f, int s) {
-
 		this(null, new Pair(f, s));
 	}
 
 	public Piece(Pair values) {
-
 		this(null, values);
 	}
 
+	
+	
+	
 
 	public final Pair getPositionPair() {
 		return centerPosition;
+	}
+
+	public final void setCenterPosition(Pair centerPosition) {
+		this.centerPosition = centerPosition;
 	}
 
 	public final Pair getValuesPair() {
@@ -85,101 +92,48 @@ public class Piece {
 		this.availablePosition = availablePosition;
 	}
 
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	public final void flipValues() {
+		values.swapValues();
+	}
+		
 	public final boolean isDoubleValues() {
-		return values.getFirst() == values.getSecond();
+		return values.isSameValues();
 	}
 
-	// TODO
+	/** 
+	 * Checks whether two pieces are linkable
+	 * @param p Piece to compare.
+	 * @return <true> if they are linkable; <false> otherwise
+	 */
 	public final boolean isMatchable(Piece p) {
 
 		if(this.availablePosition == availablePosition_t.NONE || p.availablePosition == availablePosition_t.NONE || this.availablePosition == p.availablePosition)
 			return false;
 
-		return true;
+		
+		if(this.availablePosition == availablePosition_t.LEFT || this.availablePosition == availablePosition_t.LEFT_AND_SIDES)
+			return values.getFirst() == p.getValuesPair().getFirst() || values.getFirst() == p.getValuesPair().getSecond();
+		
+		else if(this.availablePosition == availablePosition_t.RIGHT || this.availablePosition == availablePosition_t.RIGHT_AND_SIDES)
+			return values.getSecond() == p.getValuesPair().getFirst() || values.getSecond() == p.getValuesPair().getSecond();
+			
+		else if(this.availablePosition == availablePosition_t.LEFT_RIGHT || this.availablePosition == availablePosition_t.ALL)
+			return values.getFirst() == p.getValuesPair().getFirst() || values.getFirst() == p.getValuesPair().getSecond() || values.getSecond() == p.getValuesPair().getFirst() || values.getSecond() == p.getValuesPair().getSecond();
+			
+		else
+			throw new IllegalStateException("Error in Piece::isMatchable().");
 	}
 	 
-	/**
-	 * Links two pieces on the board. If such connection is not possible, the link is not established.
-	 * @param p The piece which is going to be linked
-	 * @param r Null, if the positions are set by the player
-	 * @return <true> if was successful; <false> otherwise.
-	 */
-	public final boolean linkPieces(Piece p, Random r) {
-		/*
-		if(! this.isMatchable(p)) {
-			return false;
-		}
-		 */
-
-		if (this.orientation == orientation_t.LEFT_TO_RIGHT && this.availablePosition == availablePosition_t.RIGHT) {
-
-			if (this.availablePosition == availablePosition_t.RIGHT)
-
-				switch (r.nextInt(3)) {
-				case 0:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() + 3, this.centerPosition.getSecond() - 1);
-					break;
-				case 1:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() + 4, this.centerPosition.getSecond());
-					break;
-				case 2:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() + 3, this.centerPosition.getSecond() + 1);
-					break;
-
-				}
-
-
-			else if (this.availablePosition == availablePosition_t.LEFT)
-
-				switch (r.nextInt(3)) {
-				case 0:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() - 3, this.centerPosition.getSecond() - 1);
-					break;
-				case 1:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() - 4, this.centerPosition.getSecond());
-					break;
-				case 2:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() - 3, this.centerPosition.getSecond() + 1);
-					break;
-
-				}
-
-		} else if (this.orientation == orientation_t.UP_TO_DOWN && this.availablePosition == availablePosition_t.LEFT) {
-
-			if (this.availablePosition == availablePosition_t.LEFT)
-
-				switch (r.nextInt(3)) {
-				case 0:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() + 1, this.centerPosition.getSecond() - 3);
-					break;
-				case 1:
-					p.centerPosition = new Pair(this.centerPosition.getFirst(), this.centerPosition.getSecond() - 4);
-					break;
-				case 2:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() - 1, this.centerPosition.getSecond() - 3);
-					break;
-
-				}
-
-			else if (this.availablePosition == availablePosition_t.RIGHT)
-
-				switch (r.nextInt(3)) {
-				case 0:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() + 1, this.centerPosition.getSecond() + 3);
-					break;
-				case 1:
-					p.centerPosition = new Pair(this.centerPosition.getFirst(), this.centerPosition.getSecond() + 4);
-					break;
-				case 2:
-					p.centerPosition = new Pair(this.centerPosition.getFirst() - 1, this.centerPosition.getSecond() + 3);
-					break;
-
-				}
-
-		}
-
-		return true;
-	}
+	
 
 	public String toString() {
 		return values.toString();// + " -> State: " + state;

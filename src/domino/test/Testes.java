@@ -23,6 +23,8 @@ public class Testes {
 			//Show board status 
 			System.out.println(game);
 			game.makeMove();
+			
+			System.out.println("-------------------------");
 		}
 	
 		/* Show board status */

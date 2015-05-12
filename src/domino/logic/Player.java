@@ -12,9 +12,11 @@ public class Player {
 	private int score;
 	private final ArtificialInteligence ai;
 
+	
 	private List<Piece> myPieces = new LinkedList<Piece>();
 	private final Game gameAssociated;
 
+	
 	public Player(String name, int score, Game g, ArtificialInteligence ai) {
 		this.name = name;
 		this.score = score;
@@ -50,16 +52,14 @@ public class Player {
 		return myPieces.get(index);
 	}
 
-	public boolean removePiece(int index) {
+	public Piece removePiece(int index) {
 
 		try {
-			myPieces.remove(index);
+			return myPieces.remove(index);
 
 		} catch (IndexOutOfBoundsException e) {
-			return false;
+			return null;
 		}
-
-		return true;
 	}
 
 	public final Game getGameAssociated() {

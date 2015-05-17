@@ -11,7 +11,7 @@ public class Piece {
 	};
 
 	public enum availablePosition_t {
-		LEFT, RIGHT, LEFT_AND_SIDES, RIGHT_AND_SIDES, LEFT_RIGHT, ALL, NONE
+		LEFT, RIGHT, LEFT_RIGHT_UP, LEFT_RIGHT_DOWN, LEFT_RIGHT, ALL, NONE
 	};
 
 	private Pair centerPosition;
@@ -33,7 +33,7 @@ public class Piece {
 		this.values = values;
 		this.state = pieceState_t.ON_DECK;
 		this.orientation = null;
-		
+
 		if(values.isSameValues())
 			this.availablePosition = availablePosition_t.ALL;			
 		else
@@ -48,9 +48,9 @@ public class Piece {
 		this(null, values);
 	}
 
-	
-	
-	
+
+
+
 
 	public final Pair getPositionPair() {
 		return centerPosition;
@@ -92,49 +92,52 @@ public class Piece {
 		this.availablePosition = availablePosition;
 	}
 
-	
-	
-	
-	
-	
-	
-	
-	
-	
+
+
+
+
+
+
+
+
+
 	public final void flipValues() {
 		values.swapValues();
 	}
-		
+
 	public final boolean isDoubleValues() {
 		return values.isSameValues();
 	}
+
 
 	/** 
 	 * Checks whether two pieces are linkable
 	 * @param p Piece to compare.
 	 * @return <true> if they are linkable; <false> otherwise
 	 */
+
+	/*
 	public final boolean isMatchable(Piece p) {
 
 		if(this.availablePosition == availablePosition_t.NONE || p.availablePosition == availablePosition_t.NONE || this.availablePosition == p.availablePosition)
 			return false;
 
-		
+
 		if(this.availablePosition == availablePosition_t.LEFT || this.availablePosition == availablePosition_t.LEFT_AND_SIDES)
 			return values.getFirst() == p.getValuesPair().getFirst() || values.getFirst() == p.getValuesPair().getSecond();
-		
+
 		else if(this.availablePosition == availablePosition_t.RIGHT || this.availablePosition == availablePosition_t.RIGHT_AND_SIDES)
 			return values.getSecond() == p.getValuesPair().getFirst() || values.getSecond() == p.getValuesPair().getSecond();
-			
+
 		else if(this.availablePosition == availablePosition_t.LEFT_RIGHT || this.availablePosition == availablePosition_t.ALL)
 			return values.getFirst() == p.getValuesPair().getFirst() || values.getFirst() == p.getValuesPair().getSecond() || values.getSecond() == p.getValuesPair().getFirst() || values.getSecond() == p.getValuesPair().getSecond();
-			
+
 		else
 			throw new IllegalStateException("Error in Piece::isMatchable().");
 	}
-	 
-	
 
+
+	 */
 	public String toString() {
 		return values.toString();// + " -> State: " + state;
 	}

@@ -16,7 +16,7 @@ public class Testes {
 		game.addPlayer("ADC", ai);
 		game.addPlayer("Francisco", ai);
 		game.addPlayer("Rui", ai);
-
+/*
 		for (int i = 0; i < 10; i++) {
 
 			
@@ -26,7 +26,7 @@ public class Testes {
 			
 			System.out.println("-------------------------");
 		}
-	
+	*/
 		/* Show board status */
 		System.out.println(game);
 

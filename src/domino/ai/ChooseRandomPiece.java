@@ -1,33 +1,44 @@
 package domino.ai;
 
+import java.util.Collections;
 import java.util.List;
 import java.util.Random;
 
-import domino.logic.Piece;
+import domino.logic.*;
 
 public class ChooseRandomPiece implements ArtificialInteligence {
 
 	Random r = new Random();
 
 	@Override
-	/**
-	 * @param playablePieces These are the pieces which can be made a move
-	 * @param availablePieces These are the pieces from the player
-	 * 
-	 * @return Piece to play; otherwise, null, to indicate that the player must fetch a new piece.
-	 */
-	public Piece getPieceToPlay(List<Piece> playablePieces, List<Piece> availablePieces) {
-		/*
-		for (int i = 0; i < playablePieces.size(); i++) {
-			for (int j = 0; j < availablePieces.size(); j++) {
+	public boolean makeMove(Player player) {
 
-				if(playablePieces.get(i).isMatchable(availablePieces.get(j))) {
-					return availablePieces.remove(j);
+		List<Piece> playersPieces = player.getMyPieces();
+		Board b = player.getGameAssociated().getBoard();
+
+		// Escolher primeiro as pecas mais valiosas
+		Collections.sort(playersPieces);
+
+		for (Piece piece : playersPieces) {
+
+			switch(r.nextInt(2)) {
+			case 0:
+				if(! b.linkPieceToLeftExtremity(piece) && ! b.linkPieceToRightExtremity(piece))
+					continue;
+				else {
+					
+					return false;
 				}
+				
+			case 1:
+				if(! b.linkPieceToRightExtremity(piece) && ! b.linkPieceToLeftExtremity(piece))
+					continue;
+				else
+					return false;
 			}
 		}
-		*/
-		return null;
+
+		return false;
 	}
 
 }

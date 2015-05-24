@@ -10,14 +10,12 @@ public class Player {
 
 	private String name;
 	private int score;
-	private final ArtificialInteligence ai;
+	private final ArtificialInteligence ai;					// Pode ser null
 
-	
 	private List<Piece> myPieces = new LinkedList<Piece>();
 	private final Game gameAssociated;
-
 	
-	public Player(String name, int score, Game g, ArtificialInteligence ai) {
+	private Player(String name, int score, Game g, ArtificialInteligence ai) {
 		this.name = name;
 		this.score = score;
 		this.gameAssociated = g;
@@ -27,21 +25,44 @@ public class Player {
 	public Player(String name, Game g, ArtificialInteligence ai) {
 		this(name, 0, g, ai);
 	}
+	
+	public Player(String name, Game g) {
+		this(name, 0, g, null);
+	}
 
+	
+	// ------------------------------------------------------
+	
+	public final boolean isWinner() {
+		return myPieces.isEmpty();
+	}
+	
+	
+	public Piece makePlayerMove() throws LinkingNotPossible {
+
+		// Inteligencia artificial
+		if(this.ai != null) {
+		
+			
+			
+		}
+
+
+		// Peca escolhida pelo utilizador
+
+
+		return null;
+	}
+
+	
+	// -----------------------------------------------------------------
+	
 	public final String getName() {
 		return name;
 	}
 
 	public final int getScore() {
 		return score;
-	}
-
-	public final void setName(String name) {
-		this.name = name;
-	}
-
-	public final void setScore(int score) {
-		this.score = score;
 	}
 
 	public void addPiece(Piece p) {
@@ -62,33 +83,13 @@ public class Player {
 		}
 	}
 
+	public final List<Piece> getMyPieces() {
+		return myPieces;
+	}
+	
 	public final Game getGameAssociated() {
 		return gameAssociated;
 	}
-
-	public final boolean isWinner() {
-		return myPieces.isEmpty();
-	}
-
-
-	public Piece makePlayerMove(List<Piece> playablePieces) throws LinkingNotPossible {
-
-		if(this.ai != null) {
-			Piece pieceToPlay = ai.getPieceToPlay(playablePieces, myPieces);
-
-			if(pieceToPlay == null) {
-				gameAssociated.getNewAvailablePiece(this);
-				throw new LinkingNotPossible();
-			}
-		}
-
-
-		// Peca escolhida pelo utilizador
-
-
-		return null;
-	}
-
 
 	public String toString() {
 		

@@ -1,11 +1,9 @@
 package domino.ai;
 
-import java.util.List;
-
-import domino.logic.Piece;
+import domino.logic.*;
 
 public interface ArtificialInteligence {
 
-	public Piece getPieceToPlay(List<Piece> playablePieces, List<Piece> availablePieces);
+	public boolean makeMove(Player player);
 	
 }

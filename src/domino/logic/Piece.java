@@ -1,10 +1,12 @@
 package domino.logic;
 
-public class Piece {
+public class Piece implements Comparable<Piece> {
 
+	/*
 	public enum pieceState_t {
 		ON_BOARD, ON_PLAYER, ON_DECK
 	};
+	*/
 
 	public enum orientation_t {
 		HORIZONTAL, VERTICAL
@@ -17,7 +19,6 @@ public class Piece {
 	private Pair centerPosition;
 	private Pair values;
 
-	private pieceState_t state;
 	private orientation_t orientation;
 	private availablePosition_t availablePosition;
 
@@ -31,7 +32,6 @@ public class Piece {
 
 		this.centerPosition = position;
 		this.values = values;
-		this.state = pieceState_t.ON_DECK;
 		this.orientation = null;
 
 		if(values.isSameValues())
@@ -68,14 +68,6 @@ public class Piece {
 		return values.getSum();
 	}
 
-	public final pieceState_t getState() {
-		return state;
-	}
-
-	public final void setState(pieceState_t state) {
-		this.state = state;
-	}
-
 	public final orientation_t getOrientation() {
 		return orientation;
 	}
@@ -109,7 +101,7 @@ public class Piece {
 		return values.isSameValues();
 	}
 
-
+	
 	/** 
 	 * Checks whether two pieces are linkable
 	 * @param p Piece to compare.
@@ -138,7 +130,54 @@ public class Piece {
 
 
 	 */
+	
+	
 	public String toString() {
 		return values.toString();// + " -> State: " + state;
 	}
+
+	@Override
+	public int hashCode() {
+		final int prime = 31;
+		int result = 1;
+		result = prime * result
+				+ ((centerPosition == null) ? 0 : centerPosition.hashCode());
+		result = prime * result + ((values == null) ? 0 : values.hashCode());
+		return result;
+	}
+
+	@Override
+	public boolean equals(Object obj) {
+		if (this == obj)
+			return true;
+		if (obj == null)
+			return false;
+		if (!(obj instanceof Piece))
+			return false;
+		Piece other = (Piece) obj;
+		if (centerPosition == null) {
+			if (other.centerPosition != null)
+				return false;
+		} else if (!centerPosition.equals(other.centerPosition))
+			return false;
+		if (values == null) {
+			if (other.values != null)
+				return false;
+		} else if (!values.equals(other.values))
+			return false;
+		return true;
+	}
+
+	@Override
+	public int compareTo(Piece o) {
+		if(this.getSum() > o.getSum())
+			return 1;
+		
+		else if(this.getSum() == o.getSum())
+			return 0;
+		
+		else return -1;
+	}
+	
+	
 }

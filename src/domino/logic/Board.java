@@ -3,7 +3,6 @@ package domino.logic;
 import java.util.LinkedList;
 import java.util.List;
 
-import domino.exceptions.LinkingNotPossible;
 
 public class Board {
 
@@ -13,30 +12,82 @@ public class Board {
 	private List<Piece> allPiecesOnTable = new LinkedList<Piece>();
 	
 	
-	
-	public final void putPieceOnTable(Piece onTable, Piece toPlay) throws LinkingNotPossible {
+	public final boolean linkPieceToLeftExtremity(Piece p) {
 		
-		if(onTable == null || toPlay == null)
-			throw new UnsupportedOperationException("Piece not valid");
+		if(checkFirstPiecePlacement(p))
+			return true;
 		
-		else if(toPlay.getState() != Piece.pieceState_t.ON_PLAYER)
-			throw new UnsupportedOperationException("The piece is not from the player");
+		int leftValue = allPiecesOnTable.get(0).getValuesPair().getFirst();
 		
-		else if(onTable == allPiecesOnTable.get(0)) {
-			toPlay.setState(Piece.pieceState_t.ON_BOARD);
-			allPiecesOnTable.add(0, toPlay);
+		if(leftValue == p.getValuesPair().getSecond()) {
 			
-		} else if(onTable == allPiecesOnTable.get(allPiecesOnTable.size() - 1)) {
-			toPlay.setState(Piece.pieceState_t.ON_BOARD);
-			allPiecesOnTable.add(toPlay);
+			allPiecesOnTable.add(0, p);
+			return true;
 			
-		} else {
-			throw new LinkingNotPossible("The piece cannot be linked to any available on the table");
+		} else if(leftValue == p.getValuesPair().getFirst()) {
 			
-		}
+			p.getValuesPair().swapValues();
+			allPiecesOnTable.add(0, p);
+			return true;
+		
+		} else
+			return false;
 	}
 	
-	public final List<Piece> getAllPiecesOnTable() {
+	
+	public final boolean linkPieceToRightExtremity(Piece p) {
+		
+		// Primeira peca a ser colocada
+		if(checkFirstPiecePlacement(p))
+			return true;
+
+		int rightValue = allPiecesOnTable.get(allPiecesOnTable.size() - 1).getValuesPair().getSecond();
+
+		if(rightValue == p.getValuesPair().getFirst()) {
+
+			allPiecesOnTable.add(p);
+			return true;
+
+		} else if(rightValue == p.getValuesPair().getSecond()) {
+
+			p.getValuesPair().swapValues();
+			allPiecesOnTable.add(p);
+			return true;
+
+		} else
+			return false;
+	}
+
+
+	private boolean checkFirstPiecePlacement(Piece p) {
+		
+		if(allPiecesOnTable.size() == 0) {
+
+			allPiecesOnTable.add(p);
+			return true;
+		
+		} else 
+			return false;
+	}
+	
+	// Peca esquerda -> get(0)
+	// Peca direita  -> get(n - 1)
+	public final List<Piece> getBoardExtremities() {
+		List<Piece> l = new LinkedList<Piece>();
+		
+		l.add(allPiecesOnTable.get(0));
+		l.add(allPiecesOnTable.get(allPiecesOnTable.size() - 1));
+		
+		return l;
+	}
+
+	
+	
+	
+	
+	
+	
+ 	public final List<Piece> getAllPiecesOnTable() {
 		return allPiecesOnTable;
 	}
 

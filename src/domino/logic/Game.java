@@ -6,12 +6,12 @@ import java.util.List;
 
 import domino.ai.ArtificialInteligence;
 import domino.exceptions.LinkingNotPossible;
+import domino.exceptions.NotEnoughPieces;
 
 public class Game {
 
 	private static final int MAX_PIECES_PER_PLAYER = 7;
 	private static final int MAX_NO_PLAYERS = 4;
-
 
 	private Board board = new Board();								/* Contains the state of the board, that is, all pieces already played by the players */
 	private List<Player> players = new LinkedList<Player>();		/* Contains a list of the players */
@@ -22,13 +22,11 @@ public class Game {
 
 	public Game() {
 
-		/* Add a new available piece */
+		/* Creates all pieces available piece */
 		for (int i = 0; i <= 6; i++) {
 			for (int j = 0; j <= i; j++) {
 
-				Piece p = new Piece(i, j);
-
-				availablePieces.add(p);
+				availablePieces.add(new Piece(i, j));
 			}
 		}
 
@@ -51,12 +49,15 @@ public class Game {
 		players.add(p);
 
 		/* Giving pieces to player */
-		int i = 0;						/* Number of pieces given to the player */
-		while (i < MAX_PIECES_PER_PLAYER) {
-
-			getNewAvailablePiece(p);
-
-			i++;
+		for (int i = 0; i < MAX_PIECES_PER_PLAYER; i++) {
+			
+			try {
+				this.giveAvailablePieceToPlayer(p);
+				
+			} catch (NotEnoughPieces e) {
+				System.out.println("Error in Game::addPlayer method: " + e.getMessage());
+				e.printStackTrace();
+			}
 		}
 	}
 
@@ -85,547 +86,46 @@ public class Game {
 	*/
 
 
-	/* Pedido feito pelo jogador para obter nova peça */
-	public final void getNewAvailablePiece(Player p) {
+	// Pedido feito pelo jogador para obter nova peca
+	public final void giveAvailablePieceToPlayer(Player p) throws NotEnoughPieces {
 
-		Piece piece = getPiece(Piece.pieceState_t.ON_PLAYER);
+		Piece piece = getPiece();
 
 		if(piece == null)
-			throw new UnsupportedOperationException("Not possible to give a piece to the player.");
+			throw new NotEnoughPieces("Not possible to give a piece to the player.");
 		else
 			p.addPiece(piece);
 	}
 
 
-
-
-
-
-	/* Obter nova peça */
-	private final Piece getPiece(Piece.pieceState_t newState) {
+	// Obter nova peca
+	private final Piece getPiece() {
 
 		if(availablePieces.isEmpty()) {
 			return null;
+			
 		} else {
-			Piece piece = availablePieces.remove(0);
-			piece.setState(newState);
-			return piece;
+			
+			return availablePieces.remove(0);
 		}
 	}
 
 
-	/**
-	 * Links two pieces on the board. If such connection is not possible, the link is not established.
-	 * @param p1 The piece which is going to be linked with p2. It is already in the table
-	 * @param p2 The other piece involved in the process of linkage
-	 * @param r Random object used to get a random orientation for the piece (valid if the player is not human). Furthermore, it accepts <null> if the positions are set by the player.
-	 * @return <true> if was successful; <false> otherwise.
-	 */
-	public final boolean linkPieces(Piece p1, Piece p2, Piece.orientation_t newOrientation, Direction newDirection) {
-
-		if(p1.getPositionPair() == null || p1.getState() == Piece.pieceState_t.ON_PLAYER)
-			return false;
-
-
-		if(p2.isDoubleValues()) {
-
-			if(p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.RIGHT) {
-
-				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT_RIGHT_UP);
-					p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-				} else 
-					return false;
-
-			} else if(p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT) {
-
-				if(p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT_RIGHT_DOWN);
-					p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-				} else 
-					return false;
-
-			} else if(p1.getOrientation() == Piece.orientation_t.VERTICAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT) {
-
-				if(p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 3));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT_RIGHT_UP);
-					p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-				} else 
-					return false;
-
-			} else if(p1.getOrientation() == Piece.orientation_t.VERTICAL && p1.getAvailablePosition() == Piece.availablePosition_t.RIGHT) {
-
-				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 3));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT_RIGHT_DOWN);
-					p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-				} else 
-					return false;
-			}
-
-			// --------------------------------------------------------------------------------------------------------------------------------------------
-
-		} else if(p1.isDoubleValues()) {
-
-			if(p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT_RIGHT_UP) {
-
-				if(newDirection == Direction.RIGHT && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.RIGHT && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.LEFT && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.LEFT && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.UP && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.UP && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else
-					return false;
-
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-			} else if(p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT_RIGHT_DOWN) {
-
-				if(newDirection == Direction.RIGHT && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.RIGHT && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.LEFT && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.LEFT && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.DOWN && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.DOWN && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else
-					return false;
-
-
-			} else if(p1.getOrientation() == Piece.orientation_t.VERTICAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT_RIGHT_UP) {
-
-				if(newDirection == Direction.RIGHT && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.RIGHT && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-					p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.UP && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.UP && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-				} else if(newDirection == Direction.DOWN && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-				} else if(newDirection == Direction.DOWN && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-					p2.setOrientation(Piece.orientation_t.VERTICAL);
-					p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-
-				} else if(p1.getOrientation() == Piece.orientation_t.VERTICAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT_RIGHT_DOWN) {
-
-					if(newDirection == Direction.LEFT && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-						p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.LEFT && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-						p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.UP && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-						p2.setOrientation(Piece.orientation_t.VERTICAL);
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.UP && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-						p2.setOrientation(Piece.orientation_t.VERTICAL);
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.DOWN && p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-						p2.setOrientation(Piece.orientation_t.VERTICAL);
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.DOWN && p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-						p2.setOrientation(Piece.orientation_t.VERTICAL);
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else
-						return false;
-
-				} else
-					return false;
-			}
-
-
-
-			// -------------------------------------------------------------------------------------------------------------------------------------------
-
-		} else if (p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.RIGHT) {
-
-			if(newOrientation == Piece.orientation_t.HORIZONTAL && newDirection == Direction.LEFT) {
-
-				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-
-				} else if(p1.getValuesPair().getSecond() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 4, p1.getPositionPair().getSecond()));
-
-				} else 
-					return false;
-
-				p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-				p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-			} else {													// new orientation: Vertical 
-
-				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
-
-					if(newDirection == Direction.DOWN) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() + 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.UP) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() - 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else
-						return false;
-
-				} else if(p1.getValuesPair().getSecond() == p2.getValuesPair().getSecond()) {
-
-
-					if(newDirection == Direction.DOWN) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() + 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.UP) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() - 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() - 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else
-						return false;
-				}
-
-
-				p2.setOrientation(Piece.orientation_t.VERTICAL);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-			}
-
-
-
-		} else if (p1.getOrientation() == Piece.orientation_t.HORIZONTAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT) {
-
-			if(newOrientation == Piece.orientation_t.HORIZONTAL && newDirection == Direction.RIGHT) {
-
-				if(p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-
-				} else if(p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 4, p1.getPositionPair().getSecond()));
-
-				} else 
-					return false;
-
-				p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-				p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-			} else {													// new orientation: Vertical 
-
-				if(p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-
-					if(newDirection == Direction.DOWN) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 1, p1.getPositionPair().getSecond() + 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.UP) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 1, p1.getPositionPair().getSecond() - 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.LEFT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else
-						return false;
-
-				} else if(p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-
-
-					if(newDirection == Direction.DOWN) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 1, p1.getPositionPair().getSecond() + 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.UP) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 1, p1.getPositionPair().getSecond() - 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.LEFT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() - 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else
-						return false;
-				}
-
-
-				p2.setOrientation(Piece.orientation_t.VERTICAL);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-			}
-
-
-
-
-
-		} else if (p1.getOrientation() == Piece.orientation_t.VERTICAL && p1.getAvailablePosition() == Piece.availablePosition_t.RIGHT) {
-
-			if(newOrientation == Piece.orientation_t.VERTICAL && newDirection == Direction.DOWN) {
-
-				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-
-				} else if(p1.getValuesPair().getSecond() == p2.getValuesPair().getSecond()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() + 4));
-
-				} else 
-					return false;
-
-				p2.setOrientation(Piece.orientation_t.VERTICAL);
-				p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-			} else {													// New orientation: horizontal
-
-				if(p1.getValuesPair().getSecond() == p2.getValuesPair().getFirst()) {
-
-					if(newDirection == Direction.LEFT) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.DOWN) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() + 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else
-						return false;
-
-				} else if(p1.getValuesPair().getSecond() == p2.getValuesPair().getSecond()) {
-
-
-					if(newDirection == Direction.LEFT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() + 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.DOWN) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 1, p1.getPositionPair().getSecond() + 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else
-						return false;
-				}
-
-
-				p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-			}
-
-
-
-
-		} else if (p1.getOrientation() == Piece.orientation_t.VERTICAL && p1.getAvailablePosition() == Piece.availablePosition_t.LEFT) {
-
-			if(newOrientation == Piece.orientation_t.VERTICAL && newDirection == Direction.UP) {
-
-				if(p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-
-				} else if(p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-					p2.flipValues();
-					p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst(), p1.getPositionPair().getSecond() - 4));
-
-				} else 
-					return false;
-
-				p2.setOrientation(Piece.orientation_t.VERTICAL);
-				p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-
-			} else {																		// New orientation: horizontal										 
-
-				if(p1.getValuesPair().getFirst() == p2.getValuesPair().getFirst()) {
-
-					if(newDirection == Direction.LEFT) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() - 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() - 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.UP) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 1, p1.getPositionPair().getSecond() - 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else
-						return false;
-
-				} else if(p1.getValuesPair().getFirst() == p2.getValuesPair().getSecond()) {
-
-
-					if(newDirection == Direction.LEFT) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 3, p1.getPositionPair().getSecond() - 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else if(newDirection == Direction.RIGHT) {
-						p2.flipValues();
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() + 3, p1.getPositionPair().getSecond() - 1));
-						p2.setAvailablePosition(Piece.availablePosition_t.RIGHT);
-
-					} else if(newDirection == Direction.UP) {
-						p2.setCenterPosition(new Pair(p1.getPositionPair().getFirst() - 1, p1.getPositionPair().getSecond() - 3));
-						p2.setAvailablePosition(Piece.availablePosition_t.LEFT);
-
-					} else 
-						return false;
-				}
-
-
-				p2.setOrientation(Piece.orientation_t.HORIZONTAL);
-				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
-			}
-		} 
-
-
-
-
-
-		/* Colocar peca no tabuleiro */
-		try {
-			board.putPieceOnTable(p1, p2);
+	// Verificar se algum dos jogadores ja ganhou. Se sim, retorna-lo
+	public final Player getWinnerPlayer() {
+		
+		Player p = null;
+		
+		for (Player player : players) {
 			
-		} catch(LinkingNotPossible e) {
-			System.out.println(e.getMessage());
-			
-			p2.setOrientation(null);
-			p2.setCenterPosition(null);
-			
-			if(p2.isDoubleValues()) {
-				p2.setAvailablePosition(Piece.availablePosition_t.ALL);
-			} else {
-				p2.setAvailablePosition(Piece.availablePosition_t.LEFT_RIGHT);
+			if(player.isWinner()) {
+				p = player;
+				break;
 			}
-			
-			return false;
 		}
-
-		return true;
+		
+		return p;
 	}
-
 
 
 

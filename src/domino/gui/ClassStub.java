@@ -1,9 +1,7 @@
 package domino.gui;
 
 import domino.exceptions.LinkingNotPossible;
-import domino.logic.Direction;
-import domino.logic.Pair;
-import domino.logic.Piece;
+import domino.logic.*;
 
 public class ClassStub {
 
@@ -14,6 +12,8 @@ public class ClassStub {
 	 * @param r Random object used to get a random orientation for the piece (valid if the player is not human). Furthermore, it accepts <null> if the positions are set by the player.
 	 * @return <true> if was successful; <false> otherwise.
 	 */
+	
+	/*
 	public final boolean linkPieces(Piece p1, Piece p2, Piece.orientation_t newOrientation, Direction newDirection) {
 
 		if(p1.getPositionPair() == null)
@@ -492,12 +492,13 @@ public class ClassStub {
 				p1.setAvailablePosition(Piece.availablePosition_t.NONE);
 			}
 		} 
-
+*/
 
 
 
 
 		/* Colocar peca no tabuleiro */
+	/*
 		try {
 			board.putPieceOnTable(p1, p2);
 			
@@ -520,6 +521,6 @@ public class ClassStub {
 	}
 	
 	
-	
+	*/
 	
 }

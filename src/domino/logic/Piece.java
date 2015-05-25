@@ -2,25 +2,12 @@ package domino.logic;
 
 public class Piece implements Comparable<Piece> {
 
-	/*
-	public enum pieceState_t {
-		ON_BOARD, ON_PLAYER, ON_DECK
-	};
-	*/
-
-	public enum orientation_t {
-		HORIZONTAL, VERTICAL
-	};
-
-	public enum availablePosition_t {
-		LEFT, RIGHT, LEFT_RIGHT_UP, LEFT_RIGHT_DOWN, LEFT_RIGHT, ALL, NONE
-	};
-
 	private Pair centerPosition;
 	private Pair values;
 
-	private orientation_t orientation;
-	private availablePosition_t availablePosition;
+	private Rotation rot;
+	
+	private boolean isFlipped = false;
 
 	public Piece(Pair position, Pair values) {
 
@@ -32,12 +19,7 @@ public class Piece implements Comparable<Piece> {
 
 		this.centerPosition = position;
 		this.values = values;
-		this.orientation = null;
-
-		if(values.isSameValues())
-			this.availablePosition = availablePosition_t.ALL;			
-		else
-			this.availablePosition = availablePosition_t.LEFT_RIGHT;
+		this.rot = Rotation.NORTH;
 	}
 
 	public Piece(int f, int s) {
@@ -68,68 +50,40 @@ public class Piece implements Comparable<Piece> {
 		return values.getSum();
 	}
 
-	public final orientation_t getOrientation() {
-		return orientation;
+	public final Rotation getRotation() {
+		return rot;
 	}
 
-	public final void setOrientation(orientation_t orientation) {
-		this.orientation = orientation;
+	public final void setRotaion(Rotation newRot) {
+		this.rot = newRot;
 	}
 
-	public final availablePosition_t getAvailablePosition() {
-		return availablePosition;
+	public final boolean isFlipped() {
+		return isFlipped;
 	}
-
-	public final void setAvailablePosition(availablePosition_t availablePosition) {
-		this.availablePosition = availablePosition;
-	}
-
-
-
-
-
-
-
-
-
+	
+	
+	
 
 	public final void flipValues() {
-		values.swapValues();
+		// Trocar valores (para manter a coerencia a nivel logico)
+		this.values.swapValues();
+		
+		// Mas manter a mesma orientacao grafica (para manter a coerencia a nivel grafico)
+		this.rot = Rotation.calculateRotation(this.rot, 2);
+		
+		// Notificar a troca
+		this.isFlipped = !this.isFlipped;
 	}
 
 	public final boolean isDoubleValues() {
 		return values.isSameValues();
 	}
 
-	
-	/** 
-	 * Checks whether two pieces are linkable
-	 * @param p Piece to compare.
-	 * @return <true> if they are linkable; <false> otherwise
-	 */
 
-	/*
-	public final boolean isMatchable(Piece p) {
-
-		if(this.availablePosition == availablePosition_t.NONE || p.availablePosition == availablePosition_t.NONE || this.availablePosition == p.availablePosition)
-			return false;
-
-
-		if(this.availablePosition == availablePosition_t.LEFT || this.availablePosition == availablePosition_t.LEFT_AND_SIDES)
-			return values.getFirst() == p.getValuesPair().getFirst() || values.getFirst() == p.getValuesPair().getSecond();
-
-		else if(this.availablePosition == availablePosition_t.RIGHT || this.availablePosition == availablePosition_t.RIGHT_AND_SIDES)
-			return values.getSecond() == p.getValuesPair().getFirst() || values.getSecond() == p.getValuesPair().getSecond();
-
-		else if(this.availablePosition == availablePosition_t.LEFT_RIGHT || this.availablePosition == availablePosition_t.ALL)
-			return values.getFirst() == p.getValuesPair().getFirst() || values.getFirst() == p.getValuesPair().getSecond() || values.getSecond() == p.getValuesPair().getFirst() || values.getSecond() == p.getValuesPair().getSecond();
-
-		else
-			throw new IllegalStateException("Error in Piece::isMatchable().");
+	public final boolean areMatchable(Piece p) {	
+		return this.values.getFirst() == p.values.getFirst() || this.values.getFirst() == p.values.getSecond() || this.values.getSecond() == p.values.getFirst() || this.values.getSecond() == p.values.getSecond();
 	}
-
-
-	 */
 	
 	
 	public String toString() {

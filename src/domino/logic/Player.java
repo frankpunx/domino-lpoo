@@ -10,6 +10,7 @@ public class Player {
 
 	private String name;
 	private int score;
+	
 	private final ArtificialInteligence ai;					// Pode ser null
 
 	private List<Piece> myPieces = new LinkedList<Piece>();
@@ -37,22 +38,6 @@ public class Player {
 		return myPieces.isEmpty();
 	}
 	
-	
-	public Piece makePlayerMove() throws LinkingNotPossible {
-
-		// Inteligencia artificial
-		if(this.ai != null) {
-		
-			
-			
-		}
-
-
-		// Peca escolhida pelo utilizador
-
-
-		return null;
-	}
 
 	
 	// -----------------------------------------------------------------

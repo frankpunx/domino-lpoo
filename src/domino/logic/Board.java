@@ -11,8 +11,13 @@ public class Board {
 	 */
 	private List<Piece> allPiecesOnTable = new LinkedList<Piece>();
 	
+	private Rotation leftExtremityOrientation;
+	private Rotation rightExtremityOrientation;
 	
-	public final boolean linkPieceToLeftExtremity(Piece p) {
+	
+
+	
+	public final boolean linkPieceToLeftExtremity(Piece p, SocketPiece sp) {
 		
 		if(checkFirstPiecePlacement(p))
 			return true;
@@ -70,6 +75,8 @@ public class Board {
 			return false;
 	}
 	
+	
+	
 	// Peca esquerda -> get(0)
 	// Peca direita  -> get(n - 1)
 	public final List<Piece> getBoardExtremities() {
@@ -90,6 +97,16 @@ public class Board {
  	public final List<Piece> getAllPiecesOnTable() {
 		return allPiecesOnTable;
 	}
+
+	public final Rotation getLeftExtremityOrientation() {
+		return leftExtremityOrientation;
+	}
+
+
+	public final Rotation getRightExtremityOrientation() {
+		return rightExtremityOrientation;
+	}
+
 
 	public String toString() {
 

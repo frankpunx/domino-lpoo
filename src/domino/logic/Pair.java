@@ -64,7 +64,7 @@ public class Pair implements Serializable {
 		return this.first == this.second;
 	}
 	
-	public void swapValues() {
+	public final void swapValues() {
 		int temp = this.first;
 		this.first = this.second;
 		this.second = temp;

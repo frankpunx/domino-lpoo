@@ -10,91 +10,197 @@ public class Board {
 	 * Note that the playable pieces are the first piece and the last one.
 	 */
 	private List<Piece> allPiecesOnTable = new LinkedList<Piece>();
-	
+
 	private Rotation leftExtremityOrientation;
 	private Rotation rightExtremityOrientation;
-	
-	
 
-	
-	public final boolean linkPieceToLeftExtremity(Piece p, SocketPiece sp) {
-		
-		if(checkFirstPiecePlacement(p))
-			return true;
-		
-		int leftValue = allPiecesOnTable.get(0).getValuesPair().getFirst();
-		
-		if(leftValue == p.getValuesPair().getSecond()) {
-			
-			allPiecesOnTable.add(0, p);
-			return true;
-			
-		} else if(leftValue == p.getValuesPair().getFirst()) {
-			
-			p.getValuesPair().swapValues();
-			allPiecesOnTable.add(0, p);
-			return true;
-		
-		} else
-			return false;
+
+
+	// NOTA: na extremidade esquerda, e o primeiro valor que esta sempre livre
+	public final void linkPieceToLeftExtremity(Piece p, SocketPiece sp) {
+
+		p.inheritFrom(sp);
+		allPiecesOnTable.add(0, p);
+
+		if(p.getRotation() == Rotation.NORTH) {
+
+			if(p.isDoubleValues()) {
+
+				leftExtremityOrientation = Rotation.WEST;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.EAST;
+
+			} else {
+
+				leftExtremityOrientation = Rotation.NORTH;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.SOUTH;
+			}
+
+
+		} else if(p.getRotation() == Rotation.EAST) {
+
+			if(p.isDoubleValues()) {
+
+				leftExtremityOrientation = Rotation.NORTH;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.SOUTH;
+
+			} else {
+
+				leftExtremityOrientation = Rotation.EAST;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.WEST;
+			}
+
+
+		} else if(p.getRotation() == Rotation.SOUTH) {
+
+			if(p.isDoubleValues()) {
+
+				leftExtremityOrientation = Rotation.EAST;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.WEST;
+
+			} else {
+
+				leftExtremityOrientation = Rotation.SOUTH;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.NORTH;
+			}
+
+
+		} else {
+
+			if(p.isDoubleValues()) {
+
+				leftExtremityOrientation = Rotation.SOUTH;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.NORTH;
+
+			} else {
+
+				leftExtremityOrientation = Rotation.WEST;
+
+				if(allPiecesOnTable.size() == 1)
+					rightExtremityOrientation = Rotation.EAST;
+			}
+		}
 	}
-	
-	
-	public final boolean linkPieceToRightExtremity(Piece p) {
-		
-		// Primeira peca a ser colocada
-		if(checkFirstPiecePlacement(p))
-			return true;
 
-		int rightValue = allPiecesOnTable.get(allPiecesOnTable.size() - 1).getValuesPair().getSecond();
 
-		if(rightValue == p.getValuesPair().getFirst()) {
 
-			allPiecesOnTable.add(p);
-			return true;
+	// NOTA: na extremidade direita, e o segundo valor que esta sempre livre
+	// p -> peca a colocar
+	public final void linkPieceToRightExtremity(Piece p, SocketPiece sp) {
 
-		} else if(rightValue == p.getValuesPair().getSecond()) {
+		p.inheritFrom(sp);
+		allPiecesOnTable.add(p);
 
-			p.getValuesPair().swapValues();
-			allPiecesOnTable.add(p);
-			return true;
+		if(p.getRotation() == Rotation.NORTH) {
 
-		} else
-			return false;
+			if(p.isDoubleValues()) {
+
+				rightExtremityOrientation = Rotation.WEST;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.EAST;
+
+			} else {
+
+				rightExtremityOrientation = Rotation.SOUTH;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.NORTH;
+			}
+
+
+
+		} else if(p.getRotation() == Rotation.EAST) {
+
+			if(p.isDoubleValues()) {
+
+				rightExtremityOrientation = Rotation.NORTH;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.SOUTH;
+
+			} else {
+
+				rightExtremityOrientation = Rotation.WEST;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.EAST;
+			}
+
+
+
+
+		} else if(p.getRotation() == Rotation.SOUTH) {
+
+			if(p.isDoubleValues()) {
+
+				rightExtremityOrientation = Rotation.EAST;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.WEST;
+
+			} else {
+
+				rightExtremityOrientation = Rotation.NORTH;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.SOUTH;
+			}
+
+		} else {
+
+			if(p.isDoubleValues()) {
+
+				rightExtremityOrientation = Rotation.SOUTH;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.NORTH;
+
+			} else {
+
+				rightExtremityOrientation = Rotation.EAST;
+
+				if(allPiecesOnTable.size() == 1)
+					leftExtremityOrientation = Rotation.WEST;
+			}
+
+		}
 	}
 
 
-	private boolean checkFirstPiecePlacement(Piece p) {
-		
-		if(allPiecesOnTable.size() == 0) {
 
-			allPiecesOnTable.add(p);
-			return true;
-		
-		} else 
-			return false;
-	}
-	
-	
-	
+
 	// Peca esquerda -> get(0)
 	// Peca direita  -> get(n - 1)
 	public final List<Piece> getBoardExtremities() {
 		List<Piece> l = new LinkedList<Piece>();
-		
+
 		l.add(allPiecesOnTable.get(0));
 		l.add(allPiecesOnTable.get(allPiecesOnTable.size() - 1));
-		
+
 		return l;
 	}
 
-	
-	
-	
-	
-	
-	
- 	public final List<Piece> getAllPiecesOnTable() {
+
+
+
+
+
+
+	public final List<Piece> getAllPiecesOnTable() {
 		return allPiecesOnTable;
 	}
 

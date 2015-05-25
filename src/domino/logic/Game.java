@@ -125,19 +125,19 @@ public class Game {
 			possibleMoves.add(getLeftPossibleCombinations(piece));
 			possibleMoves.add(getRightPossibleCombinations(piece));
 		}
-		
+
 		return possibleMoves;
 	}
 
 
-
+	
 	public final List<SocketPiece> getLeftPossibleCombinations(Piece p) {
 
 		List<SocketPiece> possibleMoves = new LinkedList<SocketPiece>();
 		Piece leftPieceOnBoard = board.getBoardExtremities().get(0);
 
 		// Se p for double
-		if(p.isDoubleValues() && p.getValuesPair().getFirst() == leftPieceOnBoard.getValuesPair().getFirst()) {
+		if(p.isDoubleValues() && p.getValuesPair().getSecond() == leftPieceOnBoard.getValuesPair().getFirst()) {
 
 			if(board.getLeftExtremityOrientation() == Rotation.NORTH) {
 
@@ -166,66 +166,66 @@ public class Game {
 
 		} else {
 
-			if(p.getValuesPair().getSecond() == leftPieceOnBoard.getValuesPair().getFirst())
+			if(p.getValuesPair().getFirst() == leftPieceOnBoard.getValuesPair().getFirst())
 				p.flipValues();
 
-			if(p.getValuesPair().getFirst() == leftPieceOnBoard.getValuesPair().getFirst()) {
+			if(p.getValuesPair().getSecond() == leftPieceOnBoard.getValuesPair().getFirst()) {
 
 				if(board.getLeftExtremityOrientation() == Rotation.NORTH) {
 
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() - 3, 
-							leftPieceOnBoard.getPositionPair().getSecond() - 1, 
-							Rotation.EAST));
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? -4 : -3), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 0 : -1), 
+							Rotation.WEST));
 
 					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst(), 
-							leftPieceOnBoard.getPositionPair().getSecond() - 4, 
-							Rotation.SOUTH));
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? -3 : -4), 
+							Rotation.NORTH));
 
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + 3, 
-							leftPieceOnBoard.getPositionPair().getSecond() - 1, 
-							Rotation.WEST));
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 4 : 3), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 0 : -1), 
+							Rotation.EAST));
 
 				} else if(board.getLeftExtremityOrientation() == Rotation.EAST) {
 
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + 1, 
-							leftPieceOnBoard.getPositionPair().getSecond() + 3, 
-							Rotation.NORTH));
-
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + 4, 
-							leftPieceOnBoard.getPositionPair().getSecond(), 
-							Rotation.WEST));
-
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + 1, 
-							leftPieceOnBoard.getPositionPair().getSecond() - 3, 
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 0 : 1), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 4 : 3), 
 							Rotation.SOUTH));
+
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 3 : 4), 
+							leftPieceOnBoard.getPositionPair().getSecond(), 
+							Rotation.EAST));
+
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 0 : 1), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? -4 : -3), 
+							Rotation.NORTH));
 
 				} else if(board.getLeftExtremityOrientation() == Rotation.SOUTH) {
 
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() - 3, 
-							leftPieceOnBoard.getPositionPair().getSecond() + 1, 
-							Rotation.EAST));
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? -4 : -3), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 0 : 1), 
+							Rotation.WEST));
 
 					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst(), 
-							leftPieceOnBoard.getPositionPair().getSecond() + 4, 
-							Rotation.NORTH));
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 3 : 4), 
+							Rotation.SOUTH));
 
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + 3, 
-							leftPieceOnBoard.getPositionPair().getSecond() + 1, 
-							Rotation.WEST));
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 4 : 3), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 0 : 1), 
+							Rotation.EAST));
 
 				} else if(board.getLeftExtremityOrientation() == Rotation.WEST) {
 
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() - 1, 
-							leftPieceOnBoard.getPositionPair().getSecond() + 3, 
-							Rotation.NORTH));
-
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() - 4, 
-							leftPieceOnBoard.getPositionPair().getSecond(), 
-							Rotation.EAST));
-
-					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() - 1, 
-							leftPieceOnBoard.getPositionPair().getSecond() - 3, 
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 0 : -1), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? 4 : 3), 
 							Rotation.SOUTH));
+
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 3 : 4), 
+							leftPieceOnBoard.getPositionPair().getSecond(), 
+							Rotation.WEST));
+
+					possibleMoves.add(new SocketPiece(leftPieceOnBoard.getPositionPair().getFirst() + (leftPieceOnBoard.isDoubleValues()? 0 : -1), 
+							leftPieceOnBoard.getPositionPair().getSecond() + (leftPieceOnBoard.isDoubleValues()? -4 : -3), 
+							Rotation.NORTH));
 
 				}
 			}
@@ -233,8 +233,8 @@ public class Game {
 
 		return possibleMoves;
 	}
-	
-	
+
+
 	public final List<SocketPiece> getRightPossibleCombinations(Piece p) {
 
 		List<SocketPiece> possibleMoves = new LinkedList<SocketPiece>();
@@ -268,7 +268,10 @@ public class Game {
 						Rotation.NORTH));
 			}
 
+
 		} else {
+			
+			
 
 			if(p.getValuesPair().getSecond() == rightPieceOnBoard.getValuesPair().getFirst())
 				p.flipValues();
@@ -277,58 +280,58 @@ public class Game {
 
 				if(board.getRightExtremityOrientation() == Rotation.NORTH) {
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() - 3, 
-							rightPieceOnBoard.getPositionPair().getSecond() - 1, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? -4 : -3), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 0 : -1), 
 							Rotation.EAST));
 
 					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst(), 
-							rightPieceOnBoard.getPositionPair().getSecond() - 4, 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? -3 : -4), 
 							Rotation.SOUTH));
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + 3, 
-							rightPieceOnBoard.getPositionPair().getSecond() - 1, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 4 : 3), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 0 : -1), 
 							Rotation.WEST));
 
 				} else if(board.getRightExtremityOrientation() == Rotation.EAST) {
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + 1, 
-							rightPieceOnBoard.getPositionPair().getSecond() + 3, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 0 : 1), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 4 : 3), 
 							Rotation.NORTH));
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + 4, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 3 : 4), 
 							rightPieceOnBoard.getPositionPair().getSecond(), 
 							Rotation.WEST));
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + 1, 
-							rightPieceOnBoard.getPositionPair().getSecond() - 3, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 0 : 1), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? -4 : -3), 
 							Rotation.SOUTH));
 
 				} else if(board.getRightExtremityOrientation() == Rotation.SOUTH) {
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() - 3, 
-							rightPieceOnBoard.getPositionPair().getSecond() + 1, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? -4 : -3), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 0 : 1), 
 							Rotation.EAST));
 
 					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst(), 
-							rightPieceOnBoard.getPositionPair().getSecond() + 4, 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 3 : 4), 
 							Rotation.NORTH));
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + 3, 
-							rightPieceOnBoard.getPositionPair().getSecond() + 1, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 4 : 3), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 0 : 1), 
 							Rotation.WEST));
 
 				} else if(board.getRightExtremityOrientation() == Rotation.WEST) {
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() - 1, 
-							rightPieceOnBoard.getPositionPair().getSecond() + 3, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 0 : -1), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? 4 : 3), 
 							Rotation.NORTH));
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() - 4, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? -3 : -4), 
 							rightPieceOnBoard.getPositionPair().getSecond(), 
 							Rotation.EAST));
 
-					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() - 1, 
-							rightPieceOnBoard.getPositionPair().getSecond() - 3, 
+					possibleMoves.add(new SocketPiece(rightPieceOnBoard.getPositionPair().getFirst() + (rightPieceOnBoard.isDoubleValues()? 0 : -1), 
+							rightPieceOnBoard.getPositionPair().getSecond() + (rightPieceOnBoard.isDoubleValues()? -4 : -3), 
 							Rotation.SOUTH));
 
 				}

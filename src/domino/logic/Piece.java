@@ -132,6 +132,11 @@ public class Piece implements Comparable<Piece> {
 		
 		else return -1;
 	}
+
+	public void inheritFrom(SocketPiece sp) {
+		this.centerPosition = sp.getCenterPosition();
+		this.rot = sp.getRot();
+	}
 	
 	
 }
